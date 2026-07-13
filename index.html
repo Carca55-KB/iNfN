@@ -176,6 +176,27 @@
       max-width: none;
       max-height: none;
     }
+    .modal-close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover {
+      background: rgba(255,255,255,0.2);
+    }
     @media (max-width: 768px) {
       .timeline::before { left: 20px; }
       .card, .card:nth-child(even) { flex-direction: column !important; align-items: flex-start; }
@@ -309,6 +330,7 @@
 </div>
 
 <div class="modal-overlay" id="zoomModal" onclick="closeZoom(event)">
+  <button class="modal-close" onclick="document.getElementById('zoomModal').classList.remove('active'); document.body.style.overflow = '';">✕</button>
   <div class="zoom-container" id="zoomContainer">
     <img id="zoomImg" src="" alt="zoom">
   </div>
