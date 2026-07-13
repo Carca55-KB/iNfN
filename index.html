@@ -114,6 +114,68 @@
       font-size: 5rem;
       line-height: 1;
     }
+    .card-visual img.demo-image {
+      width: 100%;
+      border-radius: 12px;
+      border: 2px solid #2a3a6a;
+      cursor: zoom-in;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card-visual img.demo-image:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 30px rgba(100, 181, 246, 0.25);
+    }
+    .card-visual .quote-text {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: #b0c4de;
+      font-style: italic;
+      text-align: left;
+      line-height: 1.5;
+      background: #141a28;
+      padding: 1rem;
+      border-radius: 12px;
+      border-left: 3px solid #64b5f6;
+    }
+    /* Modal per zoom immagine */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      cursor: zoom-out;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-overlay .zoom-container {
+      position: relative;
+      width: 90%;
+      height: 90%;
+      overflow: hidden;
+      cursor: grab;
+      touch-action: none;
+    }
+    .modal-overlay .zoom-container img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      max-width: 100%;
+      max-height: 100%;
+      transition: transform 0.1s ease;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .modal-overlay .zoom-container img.zoomed {
+      max-width: none;
+      max-height: none;
+    }
     @media (max-width: 768px) {
       .timeline::before { left: 20px; }
       .card, .card:nth-child(even) { flex-direction: column !important; align-items: flex-start; }
@@ -165,7 +227,13 @@
       <h3>Filosofia greca</h3>
       <p>Democrito ipotizza che tutta la materia sia composta da particelle indivisibili chiamate <em>átomos</em> (indivisibile). L'atomo è eterno, immutabile e indistruttibile.</p>
     </div>
-    <div class="card-visual">⏺</div>
+    <div class="card-visual">
+      <img class="demo-image" src="Democrito.jpeg" alt="Democrito" onclick="openZoom(this)">
+      <div class="quote-text">
+        "Se una freccia deve percorrere in 30 secondi 10 metri, deve prima passare per 5 metri. Per passare per 5 metri deve prima passare da 3 metri e così via. Com'è allora possibile percorrere in 30 secondi un numero infinito di punti? Ebbene figliolo, ecco la soluzione: sei tu! Tu sei l'unità fondamentale del mondo, non c'è più piccolo di te. E ora va' a spiegare i misteri del mondo."<br><br>
+        Queste furono le parole che mio padre Democrito mi disse il giorno in cui io, Atoman, mi incamminai nel mio viaggio.
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -239,9 +307,90 @@
   <img id="qrCode" alt="QR Code" width="200" height="200">
 </div>
 
+<div class="modal-overlay" id="zoomModal" onclick="closeZoom(event)">
+  <div class="zoom-container" id="zoomContainer">
+    <img id="zoomImg" src="" alt="zoom">
+  </div>
+</div>
+
 <script>
-  document.getElementById('qrCode').src =
-    'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://infn.onrender.com';
+  let isZoomed = false, scale = 1, posX = 0, posY = 0, isDragging = false, startX, startY;
+
+  function openZoom(img) {
+    const modal = document.getElementById('zoomModal');
+    const zoomImg = document.getElementById('zoomImg');
+    zoomImg.src = img.src;
+    modal.classList.add('active');
+    isZoomed = false; scale = 1; posX = 0; posY = 0;
+    zoomImg.style.transform = 'translate(-50%, -50%) scale(1)';
+    zoomImg.classList.remove('zoomed');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeZoom(e) {
+    if (e.target === e.currentTarget) {
+      document.getElementById('zoomModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('zoomModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  const container = document.getElementById('zoomContainer');
+  const zoomImg = document.getElementById('zoomImg');
+
+  container.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.max(0.5, Math.min(10, scale + delta));
+    zoomImg.classList.toggle('zoomed', scale > 1);
+    zoomImg.style.transform = 'translate(calc(-50% + ' + posX + 'px), calc(-50% + ' + posY + 'px)) scale(' + scale + ')';
+  });
+
+  container.addEventListener('mousedown', function(e) {
+    isDragging = true; startX = e.clientX - posX; startY = e.clientY - posY;
+    container.style.cursor = 'grabbing';
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    posX = e.clientX - startX; posY = e.clientY - startY;
+    zoomImg.style.transform = 'translate(calc(-50% + ' + posX + 'px), calc(-50% + ' + posY + 'px)) scale(' + scale + ')';
+  });
+
+  document.addEventListener('mouseup', function() {
+    isDragging = false; container.style.cursor = 'grab';
+  });
+
+  let touchStartX, touchStartY, touchDist = 0;
+  container.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 1) {
+      touchStartX = e.touches[0].clientX - posX;
+      touchStartY = e.touches[0].clientY - posY;
+    } else if (e.touches.length === 2) {
+      touchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    }
+  });
+
+  container.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (e.touches.length === 1 && scale > 1) {
+      posX = e.touches[0].clientX - touchStartX;
+      posY = e.touches[0].clientY - touchStartY;
+      zoomImg.style.transform = 'translate(calc(-50% + ' + posX + 'px), calc(-50% + ' + posY + 'px)) scale(' + scale + ')';
+    } else if (e.touches.length === 2) {
+      const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      scale = Math.max(0.5, Math.min(10, scale * (dist / touchDist)));
+      touchDist = dist;
+      zoomImg.classList.toggle('zoomed', scale > 1);
+      zoomImg.style.transform = 'translate(calc(-50% + ' + posX + 'px), calc(-50% + ' + posY + 'px)) scale(' + scale + ')';
+    }
+  }, { passive: false });
 </script>
 
 </body>
