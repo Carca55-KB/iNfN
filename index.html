@@ -11,25 +11,8 @@
       background: #e8edf5;
       color: #1a1f2e;
       line-height: 1.6;
-      padding-top: 60px;
     }
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      background: rgba(15, 20, 32, 0.9);
-      border-bottom: 1px solid #2a3a6a;
-      padding: 0 2rem;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      z-index: 100;
-      backdrop-filter: blur(8px);
-    }
-    nav .nav-title {
-      color: #1a2a5e;
-      font-weight: 700;
-      font-size: 1rem;
-    }
+    nav { display: none; }
     /* Particelle animate */
     .particles {
       position: fixed;
@@ -38,10 +21,9 @@
       z-index: 0;
       overflow: hidden;
     }
-    .particle {
+    .particle, .atom-ring {
       position: absolute;
       border-radius: 50%;
-      background: rgba(26, 42, 94, 0.08);
       animation: float linear infinite;
     }
     @keyframes float {
@@ -50,36 +32,49 @@
       90% { opacity: 1; }
       100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
     }
-    .particle:nth-child(1) { width: 12px; height: 12px; left: 5%; animation-duration: 18s; animation-delay: 0s; }
-    .particle:nth-child(2) { width: 20px; height: 20px; left: 15%; animation-duration: 22s; animation-delay: 2s; background: rgba(100, 181, 246, 0.1); border-radius: 40%; }
-    .particle:nth-child(3) { width: 8px; height: 8px; left: 25%; animation-duration: 15s; animation-delay: 4s; }
-    .particle:nth-child(4) { width: 16px; height: 16px; left: 35%; animation-duration: 20s; animation-delay: 1s; background: rgba(206, 147, 216, 0.08); border-radius: 40%; }
-    .particle:nth-child(5) { width: 10px; height: 10px; left: 45%; animation-duration: 25s; animation-delay: 3s; }
-    .particle:nth-child(6) { width: 14px; height: 14px; left: 55%; animation-duration: 17s; animation-delay: 5s; background: rgba(100, 181, 246, 0.08); }
-    .particle:nth-child(7) { width: 22px; height: 22px; left: 65%; animation-duration: 23s; animation-delay: 0s; background: rgba(206, 147, 216, 0.1); border-radius: 40%; }
-    .particle:nth-child(8) { width: 6px; height: 6px; left: 75%; animation-duration: 19s; animation-delay: 2s; }
-    .particle:nth-child(9) { width: 18px; height: 18px; left: 82%; animation-duration: 21s; animation-delay: 4s; background: rgba(100, 181, 246, 0.06); }
-    .particle:nth-child(10) { width: 10px; height: 10px; left: 92%; animation-duration: 16s; animation-delay: 3s; }
-    .particle:nth-child(11) { width: 26px; height: 26px; left: 10%; animation-duration: 28s; animation-delay: 6s; background: rgba(206, 147, 216, 0.06); border-radius: 40%; }
-    .particle:nth-child(12) { width: 8px; height: 8px; left: 50%; animation-duration: 14s; animation-delay: 1s; }
+    .atom-ring {
+      border: 2px solid rgba(26, 42, 94, 0.08);
+      background: transparent;
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+    .atom-ring::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 6px; height: 6px;
+      background: rgba(26, 42, 94, 0.12);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .atom-ring:nth-child(1) { width: 40px; height: 40px; left: 8%; animation-duration: 25s; animation-delay: 0s; border-color: rgba(100, 181, 246, 0.12); }
+    .atom-ring:nth-child(2) { width: 30px; height: 30px; left: 30%; animation-duration: 20s; animation-delay: 3s; border-color: rgba(206, 147, 216, 0.1); }
+    .atom-ring:nth-child(3) { width: 50px; height: 50px; left: 55%; animation-duration: 28s; animation-delay: 5s; border-color: rgba(100, 181, 246, 0.08); }
+    .atom-ring:nth-child(4) { width: 35px; height: 35px; left: 75%; animation-duration: 22s; animation-delay: 2s; border-color: rgba(206, 147, 216, 0.12); }
+    .atom-ring:nth-child(5) { width: 45px; height: 45px; left: 90%; animation-duration: 26s; animation-delay: 7s; border-color: rgba(100, 181, 246, 0.09); }
+    .particle:nth-child(6) { width: 12px; height: 12px; left: 5%; animation-duration: 18s; animation-delay: 0s; }
+    .particle:nth-child(7) { width: 8px; height: 8px; left: 20%; animation-duration: 15s; animation-delay: 4s; }
+    .particle:nth-child(8) { width: 16px; height: 16px; left: 40%; animation-duration: 20s; animation-delay: 1s; background: rgba(206, 147, 216, 0.08); border-radius: 40%; }
+    .particle:nth-child(9) { width: 10px; height: 10px; left: 50%; animation-duration: 25s; animation-delay: 3s; }
+    .particle:nth-child(10) { width: 14px; height: 14px; left: 65%; animation-duration: 17s; animation-delay: 5s; background: rgba(100, 181, 246, 0.08); }
+    .particle:nth-child(11) { width: 6px; height: 6px; left: 80%; animation-duration: 19s; animation-delay: 2s; }
+    .particle:nth-child(12) { width: 18px; height: 18px; left: 95%; animation-duration: 21s; animation-delay: 4s; background: rgba(100, 181, 246, 0.06); }
     header {
       text-align: center;
       padding: 5rem 2rem 3rem;
-      background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(232, 237, 245, 0.7)), url('Fisici.jpeg') center/cover fixed;
+      background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.5)), url('Fisici.jpeg') center/cover fixed;
       border-bottom: 2px solid #d0d8e8;
       position: relative;
       z-index: 1;
     }
     header h1 {
       font-size: 2.8rem;
-      background: linear-gradient(90deg, #1a2a5e, #5a3d7a, #1a2a5e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #ffffff;
       letter-spacing: 2px;
-      text-shadow: 0 2px 12px rgba(255,255,255,0.5);
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
     }
     header p {
-      color: #2a3a5e;
+      color: rgba(255,255,255,0.8);
       font-size: 1.1rem;
       margin-top: 0.5rem;
       font-weight: 500;
@@ -255,6 +250,8 @@
       text-align: center;
       padding: 2rem 2rem 3rem;
       border-top: 1px solid #d0d8e8;
+      position: relative;
+      z-index: 1;
     }
     .qr-section p {
       color: #667799;
@@ -265,22 +262,21 @@
       border-radius: 12px;
       background: #fff;
       padding: 8px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
 
 <div class="particles">
+  <div class="atom-ring"></div><div class="atom-ring"></div><div class="atom-ring"></div>
+  <div class="atom-ring"></div><div class="atom-ring"></div>
   <div class="particle"></div><div class="particle"></div><div class="particle"></div>
   <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div>
 </div>
 
-<nav>
-  <span class="nav-title">⚛ INFN</span>
-</nav>
+<nav></nav>
 
 <header>
   <h1>⚛ Il viaggio di Atoman</h1>
@@ -384,6 +380,9 @@
 </div>
 
 <script>
+  document.getElementById('qrCode').src =
+    'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://infn.onrender.com';
+
   let isZoomed = false, scale = 1, posX = 0, posY = 0, isDragging = false, startX, startY;
 
   function openZoom(img) {
