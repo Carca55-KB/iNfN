@@ -102,6 +102,15 @@
       background: linear-gradient(180deg, #1a2a5e, #5a3d7a, #1a2a5e);
       transform: translateX(-50%);
     }
+    .timeline::after {
+      content: '▼';
+      position: absolute;
+      left: 50%;
+      bottom: -28px;
+      transform: translateX(-50%);
+      color: #5a3d7a;
+      font-size: 1rem;
+    }
     .card {
       display: flex;
       margin-bottom: 3rem;
@@ -406,7 +415,9 @@
     </div>
   </div>
 
-  <div style="text-align:center;margin:2rem auto;">
+</div>
+
+<div style="text-align:center;margin:2rem auto;max-width:700px;padding:0 1.5rem;position:relative;z-index:1;">
     <p style="font-size:1.1rem;color:#3a4a6a;line-height:1.7;font-style:italic;">
       "Questa è la mia storia fino ad oggi. Per ora sono stabile e continuo a viaggiare da oltre un secolo per le lande della conoscenza, in attesa della prossima avventura che mi faccia scoprire nuovamente me stesso."
     </p>
